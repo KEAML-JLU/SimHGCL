@@ -114,14 +114,13 @@ if __name__ == '__main__':
     path = './savepoint/'
     accs = []
     for seed in range(args.num_seeds):
-        fix_seed(seed)
+        fix_seed(42)
         best_valid_acc = 0
         best_valid_nmi = 0
         encoder = HyperEncoder(data.features.shape[1], params['hid_dim'], params['hid_dim'], params['num_layers'])
         model = SimHGCL(encoder, params['proj_dim']).to(args.device)
         optimizer = torch.optim.Adam(model.parameters(), lr=params['lr'], weight_decay=params['weight_decay'])
-
-        print("perform the classification task.")
+        
         for epoch in tqdm(range(1, params['epochs'] + 1)):
             loss = train(args.model_type, num_negs=None)
             if (epoch + 1) % 50 == 0:
