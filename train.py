@@ -94,7 +94,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser('SimHGCL unsupervised learning.')
     parser.add_argument('--dataset', type=str, default='cora', 
         choices=['cora', 'citeseer', 'pubmed', 'cora_coauthor', 'dblp_coauthor', 'house', 'imdb',
-      'zoo', '20newsW100', 'Mushroom', 'NTU2012', 'ModelNet40', 'dblp_copub', 'aminer', 'cell'])
+      'zoo', 'Mushroom', 'NTU2012', 'ModelNet40', 'dblp_copub', 'aminer', 'cell'])
     parser.add_argument('--model_type', type=str, default='tricl', choices=['tricl_n', 'tricl_ng', 'tricl'])
     parser.add_argument('--wg', type=float, default=1)
     parser.add_argument('--tau_n', type=float, default=0.5)
@@ -116,7 +116,6 @@ if __name__ == '__main__':
     for seed in range(args.num_seeds):
         fix_seed(42)
         best_valid_acc = 0
-        best_valid_nmi = 0
         encoder = HyperEncoder(data.features.shape[1], params['hid_dim'], params['hid_dim'], params['num_layers'])
         model = SimHGCL(encoder, params['proj_dim']).to(args.device)
         optimizer = torch.optim.Adam(model.parameters(), lr=params['lr'], weight_decay=params['weight_decay'])
