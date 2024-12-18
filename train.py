@@ -122,7 +122,7 @@ if __name__ == '__main__':
         
         for epoch in tqdm(range(1, params['epochs'] + 1)):
             loss = train(args.model_type, num_negs=None)
-            if (epoch + 1) % 50 == 0:
+            if (epoch + 1) % 10 == 0:
                 valid_acc = np.mean(node_classification_eval(mode='valid'))
 
                 if valid_acc > best_valid_acc:
