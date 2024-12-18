@@ -18,5 +18,3 @@ python train.py --dataset 'house'
 ```
 
 You can change the ```--dataset``` to ```aminer``` to train another dataset, such as ```aminer```, ```imdb```, ```dblp_copub```.
-
-If you want to perform the clustering task, please specify the argument ```--eval cluster```.
