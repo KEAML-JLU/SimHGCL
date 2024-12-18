@@ -1,12 +1,22 @@
 # SimHGCL
 The source code for "A Simple Framework for Hypergraph Contrastive Learning"
 
-Here we provide two datasets, snippets and mr, for reproducibility.
+Here we provide several datasets for reproducibility.
 ## Usage
 You can run the following the command.
 
 ```
-python train.py --dataset 'snippets'
+cd SimHGCL
 ```
 
-You can change the ```--dataset``` to ```mr``` to train another dataset.
+```
+unzip dataset.zip
+```
+
+```
+python train.py --dataset 'house'
+```
+
+You can change the ```--dataset``` to ```aminer``` to train another dataset, such as ```aminer```, ```imdb```, ```dblp_copub```.
+
+If you want to perform the clustering task, please specify the argument ```--eval cluster```.
