@@ -4,7 +4,6 @@ import pickle
 
 import torch
 import numpy as np
-from scipy import sparse
 from torch_scatter import scatter_add
 from torch.utils.data import random_split
 from utils import clique_expansion, clique_expansion_weight
@@ -55,27 +54,29 @@ class BaseDataset(object):
             processed_hypergraph[edge_to_num[edge]] = nodes
             for node in nodes:
                 incidence_matrix.append([node, edge_to_num[edge]])
-                #weak_label[node] = edge_to_num[edge]
 
         self.processed_hypergraph = processed_hypergraph
-        #self.features = torch.as_tensor(self.features)#(self.features.toarray())
         self.features = torch.as_tensor(self.features.toarray())
         self.hyperedge_index = torch.LongTensor(incidence_matrix).T.contiguous()
-        #self.adjacency_index, self.edge_attr = clique_expansion_weight(self.hyperedge_index)
+        
         self.adjacency_index = clique_expansion(self.hyperedge_index)
         self.labels = torch.LongTensor(self.labels)
         self.num_nodes = int(self.hyperedge_index[0].max()) + 1
         self.num_edges = int(self.hyperedge_index[1].max()) + 1
         self.edge_to_num = edge_to_num
         self.num_to_edge = num_to_edge
-        #self.weak_label = torch.LongTensor(weak_label)
+
+        weight = torch.ones(self.num_edges)
+        Dn = scatter_add(weight[self.hyperedge_index[1]], self.hyperedge_index[0], dim=0, dim_size=self.num_nodes)
+        De = scatter_add(torch.ones(self.hyperedge_index.shape[1]), self.hyperedge_index[1], dim=0, dim_size=self.num_edges)
+
         self.to(self.device)
 
     def to(self, device: str):
         self.features = self.features.to(device)
         self.hyperedge_index = self.hyperedge_index.to(device)
         self.adjacency_index = self.adjacency_index.to(device)
-        #self.edge_attr = self.edge_attr.to(device)
+        
         self.labels = self.labels.to(device)
         self.device = device
         return self
@@ -114,7 +115,6 @@ class BaseDataset(object):
         return [train_mask, val_mask, test_mask]
 
 
-
 class CoraCocitationDataset(BaseDataset):
     def __init__(self, **kwargs):
         super().__init__('cocitation', 'cora', **kwargs)
@@ -143,11 +143,6 @@ class DBLPCoauthorshipDataset(BaseDataset):
 class ZooDataset(BaseDataset):
     def __init__(self, **kwargs):
         super().__init__('etc', 'zoo', **kwargs)
-
-
-class NewsDataset(BaseDataset):
-    def __init__(self, **kwargs):
-        super().__init__('etc', '20newsW100', **kwargs)
 
 
 class MushroomDataset(BaseDataset):
