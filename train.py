@@ -24,15 +24,15 @@ def fix_seed(seed):
 
 
 def train(model_type, num_negs):
-    features, hyperedge_index, adjacency_index, processed_hypergraph = data.features, data.hyperedge_index, \
-    data.adjacency_index, data.processed_hypergraph
+    features, hyperedge_index, adjacency_index, processed_hypergraph, attr = data.features, data.hyperedge_index, \
+    data.adjacency_index, data.processed_hypergraph, data.edge_attr
     num_nodes, num_edges = data.num_nodes, data.num_edges
     model.train()
     optimizer.zero_grad()
 
     # Encoder
     n1, e1 = model(features, hyperedge_index, num_nodes, num_edges)
-    n2 = model.forward_gcn(features, adjacency_index)
+    n2 = model.forward_gcn(features, adjacency_index, attr)
     
     # for prototype representation of view one
     e1= [torch.mean(n1[index], dim=0, keepdim=True) for index in processed_hypergraph.values()]
