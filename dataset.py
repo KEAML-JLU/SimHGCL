@@ -6,7 +6,7 @@ import torch
 import numpy as np
 from torch_scatter import scatter_add
 from torch.utils.data import random_split
-from utils import clique_expansion, clique_expansion_weight
+from utils import clique_expansion, clique_expansion_weight_two
 
 
 class BaseDataset(object):
@@ -59,7 +59,7 @@ class BaseDataset(object):
         self.features = torch.as_tensor(self.features.toarray())
         self.hyperedge_index = torch.LongTensor(incidence_matrix).T.contiguous()
         
-        self.adjacency_index = clique_expansion(self.hyperedge_index)
+        self.adjacency_index, self.edge_attr = clique_expansion_two(self.hyperedge_index)
         self.labels = torch.LongTensor(self.labels)
         self.num_nodes = int(self.hyperedge_index[0].max()) + 1
         self.num_edges = int(self.hyperedge_index[1].max()) + 1
@@ -76,6 +76,7 @@ class BaseDataset(object):
         self.features = self.features.to(device)
         self.hyperedge_index = self.hyperedge_index.to(device)
         self.adjacency_index = self.adjacency_index.to(device)
+        self.edge_attr = self.edge_attr.to(device)
         
         self.labels = self.labels.to(device)
         self.device = device
