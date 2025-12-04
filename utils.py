@@ -81,4 +81,5 @@ def clique_expansion_weight_two(hyperedge_index: Tensor):
           else:
             edge_weights[i] += 1/len(each)
 
-    return adjacency_matrix.to(hyperedge_index.device), edge_weights
+    return adjacency_matrix.to(hyperedge_index.device), torch.FloatTensor(list(edge_weights.values()))
+
