@@ -59,7 +59,7 @@ class BaseDataset(object):
         self.features = torch.as_tensor(self.features.toarray())
         self.hyperedge_index = torch.LongTensor(incidence_matrix).T.contiguous()
         
-        self.adjacency_index, self.edge_attr = clique_expansion_two(self.hyperedge_index)
+        self.adjacency_index, self.edge_attr = clique_expansion_weight_two(self.hyperedge_index)
         self.labels = torch.LongTensor(self.labels)
         self.num_nodes = int(self.hyperedge_index[0].max()) + 1
         self.num_edges = int(self.hyperedge_index[1].max()) + 1
